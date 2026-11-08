@@ -622,7 +622,8 @@ footer p + p { margin-top: .4rem; }
     const T = cv.videoWidth / NC, r0 = mode === "app" ? 0 : 2, n = cols.length;
     const W = Math.round(T * n), H = Math.round(T * 2);
     if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
-    cols.forEach((c, i) => ctx.drawImage(cv, c * T, r0 * T, T, 2 * T, i * T, 0, T, 2 * T));
+    // the input video is stored only in the appearance rows: draw that column from them in either colouring
+    cols.forEach((c, i) => ctx.drawImage(cv, c * T, (c === 0 ? 0 : r0) * T, T, 2 * T, i * T, 0, T, 2 * T));
     const f = frameOf(cv.currentTime);
     ticks.forEach((b, k) => b.classList.toggle("on", k === f));
     fcount.textContent = `t ${f}/${N - 1}`;
