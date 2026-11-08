@@ -407,10 +407,10 @@ footer p + p { margin-top: .4rem; }
       <div class="step"><span class="k">Read-out · how</span><h3>Joint transforms on the asset's own tree</h3><p>A deterministic fit turns the generated skeletons into rotations of the input rig's joints. Linear blend skinning then poses the input mesh: rigid parts stay rigid and bones keep their length by construction.</p></div>
     </div>
     <details class="more">
-      <summary>More detail: the tokens of a frame, auxiliary bones and the read-out</summary>
+      <summary>More detail: the tokens of a frame and the read-out</summary>
       <div class="inner">
         <figure><div class="fig-plate"><img src="media/fig/fig_tokens.webp" width="984" height="574" alt="Stage 2 tokens of one frame: shape tokens on surface voxels and skeleton tokens on skeleton voxels, each carrying latents and a joint tag." loading="lazy"></div>
-          <figcaption class="cap"><b>Stage 2 tokens.</b> Surface voxels carry shape and skin latents; skeleton voxels carry skeleton latents and a joint tag. Short auxiliary bones hung off leaf joints and joints with a single child make rotations visible that joint positions cannot reveal, such as a forearm twisting about its own axis.</figcaption></figure>
+          <figcaption class="cap"><b>Stage 2 tokens.</b> Surface voxels carry shape and skin latents; skeleton voxels carry skeleton latents and a joint tag.</figcaption></figure>
         <figure><div class="fig-plate"><img src="media/fig/fig_readout.webp" width="2000" height="350" alt="The read-out: skeleton voxels vote for joint positions, are grouped by joint, and a fit recovers joint rotations on the input rig." loading="lazy"></div>
           <figcaption class="cap"><b>Read-out.</b> Skeleton voxels vote for joint positions; votes are assigned to the input rig's joints by their tags and by tracking, and a regularised fit recovers each joint's transformation.</figcaption></figure>
       </div>
