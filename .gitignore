@@ -1,0 +1,6 @@
+# render metadata (inputs of build_page.py, not used by the page) and unused variants
+media/**/*.json
+media/show/*_mesh.mp4
+media/show/davis_cows_s2*
+*.frames/
+.DS_Store
