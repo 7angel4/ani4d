@@ -4,3 +4,4 @@ media/show/*_mesh.mp4
 media/show/davis_cows_s2*
 *.frames/
 .DS_Store
+_dev/
