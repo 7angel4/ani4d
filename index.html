@@ -600,7 +600,6 @@ footer p + p { margin-top: .4rem; }
       h("div", {}, h("div", { class: "stage" }, canvas), h("div", { class: "labels" }, h("span", {}, "input video"), h("span", {}, "ActionMesh"), h("span", { class: "ours" }, "Ani4D (ours)"))),
       h("div", { class: "why-text" }, h("h3", {}, w.title), h("p", {}, w.text),
         h("p", { class: "stat" }, `median strain deviation · ActionMesh ${w.am.toFixed(4)} · ours ${w.ours.toFixed(4)}`),
-        h("p", { class: "stat" }, `CD-M · ActionMesh ${fmt("actionmesh", "cd_motion")} · ours ${fmt("ours", "cd_motion")}`),
         h("div", { style: "margin-top:.7rem" }, seg),
         h("p", { style: "margin-top:.7rem" }, h("a", { href: "#compare", onclick: e => { e.preventDefault(); if (window.ANI4D_LOAD) window.ANI4D_LOAD(c.id); $("#compare").scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); } }, "Open in the comparison player →")))));
   });
