@@ -678,7 +678,7 @@ footer p + p { margin-top: .4rem; }
   })();
   const ROWLAB_VIDEO = "turned<br>55°", ROWLAB_3D = `<span class="drag">${ICON_TURN}drag to<br>turn</span>`;
   let t3 = null, t3p = null, t3on = false, t3skel = false, seen = false, t3key = "", t3focus = null, t3modP = null;
-  const loadT3 = () => t3modP || (t3modP = import("./js/turn3d.js"));
+  const loadT3 = () => t3modP || (t3modP = import("./js/turn3d.js?v=fe9f440c25"));
   const live3d = () => webgl && (t3on || mode === "strain");
   const rows3d = () => (webgl && mode === "strain" ? 2 : 1);
   const keys3d = () => cols.filter(i => M[i].key !== "input").map(i => M[i].key);

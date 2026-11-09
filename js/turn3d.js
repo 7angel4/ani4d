@@ -23,6 +23,9 @@ const BG = 0xf2f3f5;
 const FX = 50 / 36;                                  // the renders' 50 mm lens on a 36 mm sensor
 const FOV = 2 * Math.atan(18 / 50) * 180 / Math.PI;
 const lin = v => (v /= 255) <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+// light levels relative to the first version, matched to the rendered videos (render/bl_video.py, 2026-11-09): the
+// ground truth seen from the input camera is as bright in this live view as in the video row above it
+export const LOOK = { world: 1.3, light: 1.25 };
 const TOLIN = new Float32Array(256);                 // sRGB byte -> linear
 for (let i = 0; i < 256; i++) TOLIN[i] = lin(i);
 const NS = 1024, HEAT = new Float32Array(NS * 4);    // stretch 0 .. STRETCH.hi -> sRGB heat colour (0..1) and opacity
@@ -252,9 +255,9 @@ export class Turn3D {
     for (const key of want) {
       if (this.panels[key]) continue;
       const scene = new THREE.Scene();
-      scene.add(new THREE.HemisphereLight(0xffffff, 0xe6e8ec, 2.05));
-      const key1 = new THREE.DirectionalLight(0xffffff, 2.9), fill = new THREE.DirectionalLight(0xffffff, 0.85),
-            rim = new THREE.DirectionalLight(0xffffff, 0.9), sun = new THREE.DirectionalLight(0xffffff, 0.5);
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xe6e8ec, 2.05 * LOOK.world));
+      const key1 = new THREE.DirectionalLight(0xffffff, 2.9 * LOOK.light), fill = new THREE.DirectionalLight(0xffffff, 0.85 * LOOK.light),
+            rim = new THREE.DirectionalLight(0xffffff, 0.9 * LOOK.light), sun = new THREE.DirectionalLight(0xffffff, 0.5 * LOOK.light);
       sun.castShadow = true;
       sun.shadow.mapSize.set(1024, 1024);
       sun.shadow.bias = -0.0004;
