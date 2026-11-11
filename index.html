@@ -477,7 +477,7 @@ footer p + p { margin-top: .4rem; }
 <section id="method">
   <div class="wrap">
     <div class="shead"><span class="eyebrow">Method</span><h2>Generate posed skeletons, then read out the rig's pose</h2>
-      <p>Ani4D builds on AniGen, a rigged image-to-3D generator whose skeleton is a set of voxels inside the object. Every frame is represented the way AniGen represents a static asset, and attention also reaches the neighbouring frames and the first frame, which holds the input asset.</p></div>
+      <p>Ani4D exploits the prior of AniGen, a rigged image-to-3D generator whose skeleton is a set of voxels inside the object. Every frame is represented the way AniGen represents a static asset, and attention also reaches the neighbouring frames and the first frame, which holds the input asset.</p></div>
     <figure>
       <div class="fig-plate"><img src="media/fig/fig_overview.webp" width="2000" height="545" alt="Pipeline: a rigged asset and a video go through stage 1 (surface and skeleton voxels per frame) and stage 2 (shape latents, skeleton latents, joint tags, a root token), then a read-out turns the skeletons into joint transformations on the input rig, which drive the mesh by linear blend skinning." loading="lazy"></div>
       <figcaption class="cap">The input asset and its rig enter as frame 0. <b>Stage 1</b> generates where each frame's surface and skeleton voxels are; <b>stage 2</b> fills them with structured latents, a tag naming the input joint each skeleton voxel belongs to, and a root token for the global motion. The pretrained decoders stay frozen; only attention and a few new layers are trained.</figcaption>
