@@ -476,14 +476,14 @@ footer p + p { margin-top: .4rem; }
 <section id="method">
   <div class="wrap">
     <div class="shead"><span class="eyebrow">Method</span><h2>Generate posed skeletons, then read out the rig's pose</h2>
-      <p>Ani4D exploits the prior of AniGen, a rigged image-to-3D generator whose skeleton is a set of voxels inside the object. Every frame is represented the way AniGen represents a static asset, and attention also reaches the neighbouring frames and the first frame, which holds the input asset.</p></div>
+      <p>Ani4D exploits the prior of a pretrained rigged image-to-3D model whose skeleton is a set of voxels inside the object. Every frame is represented the way that model represents a static asset, and attention also reaches the neighbouring frames and the first frame, which holds the input asset.</p></div>
     <figure>
       <div class="fig-plate"><img src="media/fig/fig_overview.webp" width="2000" height="545" alt="Pipeline: a rigged asset and a video go through stage 1 (surface and skeleton voxels per frame) and stage 2 (shape latents, skeleton latents, joint tags, a root token), then a read-out turns the skeletons into joint transformations on the input rig, which drive the mesh by linear blend skinning." loading="lazy"></div>
       <figcaption class="cap">The input asset and its rig enter as frame 0. <b>Stage 1</b> generates where each frame's surface and skeleton voxels are; <b>stage 2</b> fills them with structured latents, a tag naming the input joint each skeleton voxel belongs to, and a root token for the global motion. The pretrained decoders stay frozen; only attention and a few new layers are trained.</figcaption>
     </figure>
     <div class="steps">
       <div class="step"><span class="k">Stage 1 · where</span><h3>Posed geometry per frame</h3><p>A flow model generates each frame's occupancy: the surface voxels and the skeleton voxels, in that frame's own normalised cube, attending to neighbouring frames and to the input asset in frame 0.</p></div>
-      <div class="step"><span class="k">Stage 2 · what</span><h3>Skeletons that name their joints</h3><p>A second flow fills the voxels with AniGen's shape and skeleton latents plus a joint identity, so every skeleton voxel says which joint of the input rig it belongs to. A root token carries the global motion.</p></div>
+      <div class="step"><span class="k">Stage 2 · what</span><h3>Skeletons that name their joints</h3><p>A second flow fills the voxels with the pretrained model's shape and skeleton latents plus a joint identity, so every skeleton voxel says which joint of the input rig it belongs to. A root token carries the global motion.</p></div>
       <div class="step"><span class="k">Read-out · how</span><h3>Joint transforms on the asset's own tree</h3><p>A deterministic fit turns the generated skeletons into rotations of the input rig's joints. Linear blend skinning then poses the input mesh: rigid parts stay rigid and bones keep their length by construction.</p></div>
     </div>
     <details class="more">
@@ -555,7 +555,7 @@ footer p + p { margin-top: .4rem; }
 <footer>
   <div class="wrap">
     <p>Result videos play at 12 frames per second, about 0.4× real time, and hold their last frame briefly before looping; generated-motion clips play at their own 30 frames per second. All outputs are rendered with the input asset's colours (in the wild, the generated asset's own colours); the input frames are the rendered or in-the-wild videos each method was given.</p>
-    <p>Rendered with Blender. Every Ani4D output on this page comes from the reference checkpoints: stage 1 at 19,000 steps, trained with the agentic clips on 16 cameras, and stage 2 at 20,000.</p>
+    <p>Rendered with Blender. Every Ani4D output on this page comes from the reference checkpoints: stage 1 after 19K steps, trained with the agentic clips on 16 cameras, and stage 2 after 33K.</p>
   </div>
 </footer>
 
