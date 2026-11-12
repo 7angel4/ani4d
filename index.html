@@ -405,7 +405,7 @@ footer p + p { margin-top: .4rem; }
     <div class="prose">
       <p>Reconstructing an animatable 3D asset from a given video is a fundamental task in 3D content creation. Recent feed-forward video-to-4D methods efficiently reconstruct motion through vertex-based deformation, but often distort rigid parts, stretch geometry, and fuse nearby parts. Skeletal animation offers a structured alternative, yet learning it across diverse objects remains challenging due to varying skeleton topologies and scarce animated 3D data.</p>
       <p>Our key insight is that a rigged image-to-3D model, pretrained on large collections of static assets, already provides generalisable priors over geometry and articulation that can be leveraged for video-conditioned skeletal animation. Building on these priors, our model predicts posed geometry and skeletons across video frames. We then recover joint transformations on the asset's own kinematic tree and apply linear blend skinning, producing structurally consistent animations. When no asset is given, an off-the-shelf image-to-3D generator and rigger supply one from the first frame, so that a video alone yields a rigged, animatable asset together with its skeletal motion.</p>
-      <p>To overcome 4D data scarcity, we develop an agentic pipeline that curates rigged assets and automatically creates and validates motions, yielding 15,357 animation clips (4,436 with generated motion) rendered from 16 viewpoints. On our meticulously curated benchmark of 50 test clips from Truebones Zoo and Objaverse(-XL) with unseen skeletons, each filmed from four viewpoints, our method outperforms prior video-to-4D approaches under various metrics while better preserving part rigidity than vertex-based methods.</p>
+      <p>To overcome 4D data scarcity, we develop an agentic pipeline that curates rigged assets and automatically creates and validates motions, yielding 15,113 animation clips (4,400 with generated motion) rendered from 16 viewpoints. On our meticulously curated benchmark of 50 test clips from Truebones Zoo and Objaverse(-XL) with unseen skeletons, each filmed from four viewpoints, our method outperforms prior video-to-4D approaches under various metrics while better preserving part rigidity than vertex-based methods.</p>
     </div>
   </div>
 </section>
@@ -479,7 +479,7 @@ footer p + p { margin-top: .4rem; }
       <p>Ani4D exploits the prior of a pretrained rigged image-to-3D model whose skeleton is a set of voxels inside the object. Every frame is represented the way that model represents a static asset, and attention also reaches the neighbouring frames and the first frame, which holds the input asset.</p></div>
     <figure>
       <div class="fig-plate"><img src="media/fig/fig_overview.webp" width="2000" height="545" alt="Pipeline: a rigged asset and a video go through stage 1 (surface and skeleton voxels per frame) and stage 2 (shape latents, skeleton latents, joint tags, a root token), then a read-out turns the skeletons into joint transformations on the input rig, which drive the mesh by linear blend skinning." loading="lazy"></div>
-      <figcaption class="cap">The input asset and its rig enter as frame 0. <b>Stage 1</b> generates where each frame's surface and skeleton voxels are; <b>stage 2</b> fills them with structured latents, a tag naming the input joint each skeleton voxel belongs to, and a root token for the global motion. The pretrained decoders stay frozen; only attention and a few new layers are trained.</figcaption>
+      <figcaption class="cap">The input asset and its rig enter as frame 0. <b>Stage 1</b> generates where each frame's surface and skeleton voxels are; <b>stage 2</b> fills them with structured latents, a tag naming the input joint each skeleton voxel belongs to, and a root token for the global motion. The pretrained decoders stay frozen; we train the attention layers, stage 2's skeleton stream and a few new layers.</figcaption>
     </figure>
     <div class="steps">
       <div class="step"><span class="k">Stage 1 · sparse-structure flow</span><h3>Posed geometry per frame</h3><p>A flow model generates each frame's occupancy: the surface voxels and the skeleton voxels, in that frame's own normalised cube, attending to neighbouring frames and to the input asset in frame 0.</p></div>
@@ -501,7 +501,7 @@ footer p + p { margin-top: .4rem; }
 <section id="results">
   <div class="wrap">
     <div class="shead"><span class="eyebrow">Results · AniBench and beyond</span><h2>One model, any skeleton</h2>
-      <p>Each card shows the input video, our output from the input camera with its posed skeleton, and the same output from a camera swinging around it. AniBench clips have skeletons never seen in training; generated clips come from our agentic motion pipeline. A selection: all 50 AniBench clips are in the comparison above.</p></div>
+      <p>Each card shows the input video, our output from the input camera with its posed skeleton, and the same output from a camera swinging around it. AniBench clips have skeletons never seen in training; generated clips (AniAct) come from our agentic motion pipeline. A selection: all 50 AniBench clips are in the comparison above.</p></div>
     <div class="chips" id="res-chips" role="group" aria-label="Filter results"></div>
     <div class="cards" id="res-cards"></div>
     <button class="btn more-btn" id="res-more" type="button" hidden>Show more results</button>
@@ -521,12 +521,12 @@ footer p + p { margin-top: .4rem; }
 <section id="data">
   <div class="wrap">
     <div class="shead"><span class="eyebrow">Agentic data generation</span><h2>Curated assets, and motion generated by agents</h2>
-      <p>Rigged, animated 3D assets are scarce and dominated by walk, run and idle cycles. We curate existing animated assets with rule-based audits, a vision–language model and human review, then generate new motion on their own rigs in an actor–critic loop: a language model plans and keyframes actions, a geometric critic and a vision–language judge accept or return each clip.</p></div>
+      <p>Rigged, animated 3D assets are scarce and dominated by walk, run and idle cycles. We curate existing animated assets with rule-based audits, a vision–language model and human review, then generate new motion on their own rigs in an actor–critic loop: a vision–language model plans and keyframes actions, a geometric critic and a vision–language judge accept or return each clip.</p></div>
     <figure><div class="fig-plate"><img src="media/fig/fig_agent.webp" width="2000" height="504" alt="Agentic data generation: curation of collected assets, then an actor–critic loop that plans actions, keyframes joint rotations, and checks each clip geometrically and with a vision–language judge." loading="lazy"></div>
       <figcaption class="cap"><b>Agentic data generation.</b> (a) Rules, a vision–language model and a human reviewer curate collected assets. (b) An actor plans actions and keyframes joint rotations; a critic measures the clip in 3D and a judge must pick the planned action out of 12 labels (four planned actions and eight distractors) from rendered views. Failed clips are revised.</figcaption></figure>
     <div class="facts">
-      <div class="fact"><b class="num">15,357</b><span>rigged animation clips, each rendered from 16 cameras</span></div>
-      <div class="fact"><b class="num">4,436</b><span>clips with generated motion, on 1,842 assets</span></div>
+      <div class="fact"><b class="num">15,113</b><span>rigged animation clips, each rendered from 16 cameras</span></div>
+      <div class="fact"><b class="num">4,400</b><span>clips with generated motion (AniAct), on 1,831 assets</span></div>
       <div class="fact"><b class="num">64%</b><span>of first attempts recognised among twelve options by the judge (chance 8%)</span></div>
       <div class="fact"><b class="num">50</b><span>AniBench test clips with unseen skeletons, each filmed from four cameras</span></div>
     </div>
