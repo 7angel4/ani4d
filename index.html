@@ -367,24 +367,6 @@ footer { border-top: 1px solid var(--rule); padding-block: 2rem 3rem; color: var
 footer p + p { margin-top: .4rem; }
 .vis-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* The paper's Tab. 1 and Tab. 2 (paper_tables.py writes the rows from the paper's LaTeX). */
-.qtabs { display: grid; gap: 1.6rem; margin: 0 0 2.4rem; }
-.qfig { margin: 0; }
-.qfig .cap { margin: 0 0 .6rem; }
-.qtab-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--panel); }
-.qtab { border-collapse: collapse; width: 100%; font-size: .86rem; font-variant-numeric: tabular-nums; }
-.qtab th, .qtab td { padding: .42rem .7rem; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule); }
-.qtab thead th { font-weight: 600; color: var(--muted); background: var(--panel-2); }
-.qtab thead tr:first-child th { font-weight: 500; font-size: .78rem; text-align: center; }
-.qtab tbody th { text-align: left; font-weight: 500; }
-.qtab tr.grp th { text-align: left; font-style: italic; font-weight: 500; color: var(--muted); background: var(--panel-2); }
-.qtab tr.sep td { padding: 0; border-bottom: 2px solid var(--rule); }
-.qtab tr.ours th { color: var(--bone-ink); font-weight: 650; }
-.qtab tr.ours td, .qtab tr.ours th { background: var(--bone-soft); }
-.qtab b { font-weight: 700; }
-.qtab u { text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
-.qtab tbody tr:last-child th, .qtab tbody tr:last-child td { border-bottom: 0; }
-
 /* The paper's Tab. 1 and Tab. 2 as bar charts (quant.py writes them from the paper's LaTeX; 2026-11-19: numbers at
    the end of the page, as charts). Emphasis form: Ani4D blue, every baseline grey; bars grow from zero. */
 .q-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem 1.15rem; font-size: .86rem; color: var(--muted); margin: -.3rem 0 1.3rem; }
@@ -393,10 +375,11 @@ footer p + p { margin-top: .4rem; }
 .t-base { --bar: var(--q-base); } .t-ff { --bar: var(--bone); } .t-opt { --bar: var(--q-opt); }
 .sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; flex: none; background: var(--bar); }
 .qfig2 { margin: 0 0 1.6rem; padding: clamp(14px, 2.4vw, 28px); background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); }
-.qf-head { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
-.qf-title { font-family: var(--display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; margin-right: auto; }
-.qf-sub { font-family: var(--mono); font-size: .74rem; color: var(--muted); }
-.qf-set { margin: .3rem 0 0; font-size: .92rem; color: var(--muted); }
+.qtabbar { display: inline-flex; flex-wrap: wrap; gap: 2px; }
+.qtabbar button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.qtabbar button:focus-visible { outline: 2px solid var(--bone); outline-offset: 2px; }
+.qf-cap { margin-top: 1.1rem; }
+.qf-set { margin: .9rem 0 0; font-size: .92rem; color: var(--muted); }
 .qblock { margin-top: 1.25rem; }
 .qb-title { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin-bottom: .4rem; }
 .qc-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -415,6 +398,12 @@ footer p + p { margin-top: .4rem; }
 .qc-bar { position: absolute; left: 0; top: 50%; height: 14px; margin-top: -7px; width: var(--w); background: var(--bar);
   border-radius: 0 4px 4px 0; transition: width .75s cubic-bezier(.2, .7, .2, 1) calc(var(--i) * 45ms), filter .15s; }
 .qc-cell:hover .qc-bar { filter: brightness(1.14); }
+/* SSIM and CLIP: dots on a zoomed scale (quant.py DOTS), each on its own row line, with a 2-px ring in the surface colour */
+.qc-cell.dot .qc-track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--rule); }
+.qc-dot { position: absolute; top: 50%; left: var(--w); width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
+  background: var(--bar); box-shadow: 0 0 0 2px var(--panel); transition: opacity .4s calc(.25s + var(--i) * 45ms), transform .15s; }
+.qc-cell.dot .qv { left: calc(var(--w) + 11px); }
+.qc-cell:hover .qc-dot { transform: scale(1.25); }
 .qv { position: absolute; left: calc(var(--w) + 6px); top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: .74rem;
   color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; transition: opacity .3s calc(.5s + var(--i) * 45ms); }
 .qc-cell.ours .qv { color: var(--ink); font-weight: 650; }
@@ -424,16 +413,16 @@ footer p + p { margin-top: .4rem; }
 .qa-track span:first-child { transform: none; }
 .qjs .qview:not(.on) .qc-bar { width: 0; }
 .qjs .qview:not(.on) .qv { opacity: 0; transition: none; }
-@media (prefers-reduced-motion: reduce) { .qc-bar, .qv { transition: none; } }
+.qjs .qview:not(.on) .qc-dot { opacity: 0; transition: none; }
+@media (prefers-reduced-motion: reduce) { .qc-bar, .qv, .qc-dot { transition: none; } }
 .qtip { position: fixed; z-index: 80; pointer-events: none; max-width: 17rem; padding: .45rem .62rem; border-radius: 8px; background: var(--ink);
   color: var(--bg); font-size: .78rem; line-height: 1.3; box-shadow: 0 6px 22px rgba(0, 0, 0, .2); }
 .qtip b { display: block; font-family: var(--mono); font-size: .92rem; font-weight: 650; font-variant-numeric: tabular-nums; }
-details.qnums { margin-top: .4rem; }
-details.qnums .qtabs { margin: 0; }
 @media (max-width: 640px) {
   .qc { grid-template-columns: 6.6rem repeat(var(--nm), minmax(7.4rem, 1fr)); min-width: calc(6.6rem + var(--nm) * 8.6rem); column-gap: 1rem; }
   .qc-name .full { display: none; } .qc-name .short { display: inline; }
   .qc-lab, .qc-name { position: sticky; left: 0; z-index: 2; background: var(--panel); }
+  .qtabbar { display: flex; border-radius: 16px; } .qtabbar button { flex: 1 1 auto; }
 }
 </style>
 </head>
@@ -614,9 +603,9 @@ details.qnums .qtabs { margin: 0; }
 <section id="numbers">
   <div class="wrap">
     <div class="shead"><span class="eyebrow">AniBench and MeshBench · the paper's Tables 1 and 2</span><h2>Quantitative comparison</h2>
-      <p>CD-3D, CD-4D and CD-M are Chamfer distances measured per frame, from the first frame, and along points tracked from the first frame (shape, where it goes, and motion); MPJPE is the mean joint position error. PSNR, SSIM, LPIPS, CLIP and FVD compare renders of each output in the input's colours with the ground truth from four cameras. Each panel is one metric, with bars starting at zero.</p></div>
+      <p>CD-3D, CD-4D and CD-M are Chamfer distances measured per frame, from the first frame, and along points tracked from the first frame (shape, where it goes, and motion); MPJPE is the mean joint position error. PSNR, SSIM, LPIPS, CLIP and FVD compare renders of each output in the input's colours with the ground truth from four cameras. Each panel is one metric: bars start at zero, and SSIM and CLIP, close to their maximum of 1, are dots on a zoomed scale.</p></div>
 <div class="q-legend" aria-hidden="true"><span><i class="sw t-ff"></i>Ani4D (feed-forward)</span><span><i class="sw t-opt"></i>Ani4D + shape optimisation</span><span><i class="sw t-base"></i>baselines</span><span class="q-note">&darr; lower is better &middot; &uarr; higher is better &middot; numbers on Ani4D and the strongest baseline; hover a bar for the rest</span></div>
-<figure class="qfig2" id="q-anibench"><div class="qf-head"><h3 class="qf-title">AniBench</h3><div class="seg" role="group" aria-label="AniBench setting"><button type="button" data-view="a" aria-pressed="true">Ground-truth asset</button><button type="button" data-view="b" aria-pressed="false">Video only</button></div></div><p class="qf-set" data-view="a">(a) ground-truth first-frame mesh and rig</p><p class="qf-set" data-view="b" hidden>(b) first-frame mesh from TRELLIS.2 and rig from SkinTokens</p><p class="vis-hidden">Bar charts of the paper's results; every number is in the tables at the end of this section.</p><div class="qview" data-view="a"><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
+<figure class="qfig2" id="q-figure"><div class="seg qtabbar" role="tablist" aria-label="Benchmark and setting"><button type="button" role="tab" id="qtab-a" aria-controls="qpanel-a" aria-selected="true" tabindex="0" data-view="a">AniBench · given asset</button><button type="button" role="tab" id="qtab-b" aria-controls="qpanel-b" aria-selected="false" tabindex="-1" data-view="b">AniBench · video only</button><button type="button" role="tab" id="qtab-m" aria-controls="qpanel-m" aria-selected="false" tabindex="-1" data-view="m">MeshBench · video only</button></div><div class="qview" id="qpanel-a" role="tabpanel" aria-labelledby="qtab-a" data-view="a"><p class="qf-set">AniBench, with the ground-truth first-frame mesh given to every method.</p><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
 <div class="qc-h qc-lab"></div>
 <div class="qc-h"><span>CD-3D</span><span class="dir" title="lower is better">&darr;</span></div>
 <div class="qc-h"><span>CD-4D</span><span class="dir" title="lower is better">&darr;</span></div>
@@ -666,47 +655,47 @@ details.qnums .qtabs { margin: 0; }
 <div class="qc-h"><span>FVD</span><span class="dir" title="lower is better">&darr;</span></div>
 <div class="qc-name qr" style="--i:0">ActionMesh</div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="PSNR" data-v="18.83" data-d="1"><div class="qc-track" style="--w:94.15%"><i class="qc-bar"></i><span class="qv">18.83</span></div></div>
-<div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="SSIM" data-v="0.9038" data-d="1"><div class="qc-track" style="--w:90.38%"><i class="qc-bar"></i><span class="qv">0.9038</span></div></div>
+<div class="qc-cell dot qr t-base" style="--i:0" data-n="ActionMesh" data-k="SSIM" data-v="0.9038" data-d="1"><div class="qc-track" style="--w:79.33%"><i class="qc-dot"></i><span class="qv">0.9038</span></div></div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="LPIPS" data-v="0.0836" data-d="-1"><div class="qc-track" style="--w:69.67%"><i class="qc-bar"></i><span class="qv">0.0836</span></div></div>
-<div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="CLIP" data-v="0.9775" data-d="1"><div class="qc-track" style="--w:97.75%"><i class="qc-bar"></i><span class="qv">0.9775</span></div></div>
+<div class="qc-cell dot qr t-base" style="--i:0" data-n="ActionMesh" data-k="CLIP" data-v="0.9775" data-d="1"><div class="qc-track" style="--w:59.38%"><i class="qc-dot"></i><span class="qv">0.9775</span></div></div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="FVD" data-v="381.9" data-d="-1"><div class="qc-track" style="--w:63.65%"><i class="qc-bar"></i><span class="qv">381.9</span></div></div>
 <div class="qc-name qr" style="--i:1">Motion 3-to-4</div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="PSNR" data-v="18.74" data-d="1"><div class="qc-track" style="--w:93.70%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="SSIM" data-v="0.9031" data-d="1"><div class="qc-track" style="--w:90.31%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="SSIM" data-v="0.9031" data-d="1"><div class="qc-track" style="--w:77.00%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="LPIPS" data-v="0.0869" data-d="-1"><div class="qc-track" style="--w:72.42%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="CLIP" data-v="0.9732" data-d="1"><div class="qc-track" style="--w:97.32%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="CLIP" data-v="0.9732" data-d="1"><div class="qc-track" style="--w:32.50%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="FVD" data-v="439.8" data-d="-1"><div class="qc-track" style="--w:73.30%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr" style="--i:2">Mesh4D</div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="PSNR" data-v="17.34" data-d="1"><div class="qc-track" style="--w:86.70%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="SSIM" data-v="0.8853" data-d="1"><div class="qc-track" style="--w:88.53%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:2" data-n="Mesh4D" data-k="SSIM" data-v="0.8853" data-d="1"><div class="qc-track" style="--w:17.67%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="LPIPS" data-v="0.1029" data-d="-1"><div class="qc-track" style="--w:85.75%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="CLIP" data-v="0.9691" data-d="1"><div class="qc-track" style="--w:96.91%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:2" data-n="Mesh4D" data-k="CLIP" data-v="0.9691" data-d="1"><div class="qc-track" style="--w:6.87%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="FVD" data-v="592.2" data-d="-1"><div class="qc-track" style="--w:98.70%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr" style="--i:3">SkelMo</div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="PSNR" data-v="18.34" data-d="1"><div class="qc-track" style="--w:91.70%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="SSIM" data-v="0.8958" data-d="1"><div class="qc-track" style="--w:89.58%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:3" data-n="SkelMo" data-k="SSIM" data-v="0.8958" data-d="1"><div class="qc-track" style="--w:52.67%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="LPIPS" data-v="0.0900" data-d="-1"><div class="qc-track" style="--w:75.00%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="CLIP" data-v="0.9747" data-d="1"><div class="qc-track" style="--w:97.47%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:3" data-n="SkelMo" data-k="CLIP" data-v="0.9747" data-d="1"><div class="qc-track" style="--w:41.88%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="FVD" data-v="491.4" data-d="-1"><div class="qc-track" style="--w:81.90%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr ours first-ours" style="--i:4"><i class="sw t-ff" aria-hidden="true"></i><span class="full">Ani4D (feed-forward)</span><span class="short">Ani4D</span></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="PSNR" data-v="19.48" data-d="1"><div class="qc-track" style="--w:97.40%"><i class="qc-bar"></i><span class="qv">19.48</span></div></div>
-<div class="qc-cell qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="SSIM" data-v="0.9060" data-d="1"><div class="qc-track" style="--w:90.60%"><i class="qc-bar"></i><span class="qv">0.9060</span></div></div>
+<div class="qc-cell dot qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="SSIM" data-v="0.9060" data-d="1"><div class="qc-track" style="--w:86.67%"><i class="qc-dot"></i><span class="qv">0.9060</span></div></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="LPIPS" data-v="0.0758" data-d="-1"><div class="qc-track" style="--w:63.17%"><i class="qc-bar"></i><span class="qv">0.0758</span></div></div>
-<div class="qc-cell qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="CLIP" data-v="0.9801" data-d="1"><div class="qc-track" style="--w:98.01%"><i class="qc-bar"></i><span class="qv">0.9801</span></div></div>
+<div class="qc-cell dot qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="CLIP" data-v="0.9801" data-d="1"><div class="qc-track" style="--w:75.62%"><i class="qc-dot"></i><span class="qv">0.9801</span></div></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:4" data-n="Ani4D (feed-forward)" data-k="FVD" data-v="365.1" data-d="-1"><div class="qc-track" style="--w:60.85%"><i class="qc-bar"></i><span class="qv">365.1</span></div></div>
 <div class="qc-name qr ours" style="--i:5"><i class="sw t-opt" aria-hidden="true"></i><span class="full">Ani4D + shape optimisation</span><span class="short">+ shape opt.</span></div>
 <div class="qc-cell qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="PSNR" data-v="19.75" data-d="1"><div class="qc-track" style="--w:98.75%"><i class="qc-bar"></i><span class="qv">19.75</span></div></div>
-<div class="qc-cell qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="SSIM" data-v="0.9088" data-d="1"><div class="qc-track" style="--w:90.88%"><i class="qc-bar"></i><span class="qv">0.9088</span></div></div>
+<div class="qc-cell dot qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="SSIM" data-v="0.9088" data-d="1"><div class="qc-track" style="--w:96.00%"><i class="qc-dot"></i><span class="qv">0.9088</span></div></div>
 <div class="qc-cell qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="LPIPS" data-v="0.0711" data-d="-1"><div class="qc-track" style="--w:59.25%"><i class="qc-bar"></i><span class="qv">0.0711</span></div></div>
-<div class="qc-cell qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="CLIP" data-v="0.9823" data-d="1"><div class="qc-track" style="--w:98.23%"><i class="qc-bar"></i><span class="qv">0.9823</span></div></div>
+<div class="qc-cell dot qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="CLIP" data-v="0.9823" data-d="1"><div class="qc-track" style="--w:89.37%"><i class="qc-dot"></i><span class="qv">0.9823</span></div></div>
 <div class="qc-cell qr ours t-opt" style="--i:5" data-n="Ani4D + shape optimisation" data-k="FVD" data-v="333.6" data-d="-1"><div class="qc-track" style="--w:55.60%"><i class="qc-bar"></i><span class="qv">333.6</span></div></div>
 <div class="qc-axis qc-lab"></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">10</span><span style="--f:1">20</span></div></div>
-<div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.5</span><span style="--f:1">1</span></div></div>
+<div class="qc-axis"><div class="qa-track"><span style="--f:0">0.88</span><span style="--f:0.5">0.895</span><span style="--f:1">0.91</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.06</span><span style="--f:1">0.12</span></div></div>
-<div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.5</span><span style="--f:1">1</span></div></div>
+<div class="qc-axis"><div class="qa-track"><span style="--f:0">0.968</span><span style="--f:0.5">0.976</span><span style="--f:1">0.984</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">300</span><span style="--f:1">600</span></div></div>
-</div></div></div></div><div class="qview" data-view="b" hidden><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
+</div></div></div><p class="cap qf-cap">Averaged over AniBench&#x27;s 50 clips and their four viewpoints. Skeletal methods additionally receive the rig.</p><table class="vis-hidden"><caption>AniBench · given asset</caption><thead><tr><th>Method</th><th>CD-3D (lower is better)</th><th>CD-4D (lower is better)</th><th>CD-M (lower is better)</th><th>MPJPE (lower is better)</th><th>PSNR (higher is better)</th><th>SSIM (higher is better)</th><th>LPIPS (lower is better)</th><th>CLIP (higher is better)</th><th>FVD (lower is better)</th></tr></thead><tbody><tr><th>ActionMesh</th><td>0.0271</td><td>0.0620</td><td>0.1304</td><td>0.0516</td><td>18.83</td><td>0.9038</td><td>0.0836</td><td>0.9775</td><td>381.9</td></tr><tr><th>Motion 3-to-4</th><td>0.0307</td><td>0.0666</td><td>0.1363</td><td>0.0569</td><td>18.74</td><td>0.9031</td><td>0.0869</td><td>0.9732</td><td>439.8</td></tr><tr><th>Mesh4D</th><td>0.0337</td><td>0.0594</td><td>0.1377</td><td>0.0527</td><td>17.34</td><td>0.8853</td><td>0.1029</td><td>0.9691</td><td>592.2</td></tr><tr><th>SkelMo</th><td>0.0324</td><td>0.0616</td><td>0.1380</td><td>0.0565</td><td>18.34</td><td>0.8958</td><td>0.0900</td><td>0.9747</td><td>491.4</td></tr><tr><th>Ani4D (feed-forward)</th><td>0.0226</td><td>0.0408</td><td>0.0928</td><td>0.0364</td><td>19.48</td><td>0.9060</td><td>0.0758</td><td>0.9801</td><td>365.1</td></tr><tr><th>Ani4D + shape optimisation</th><td>0.0198</td><td>0.0378</td><td>0.0864</td><td>0.0355</td><td>19.75</td><td>0.9088</td><td>0.0711</td><td>0.9823</td><td>333.6</td></tr></tbody></table></div><div class="qview" id="qpanel-b" role="tabpanel" aria-labelledby="qtab-b" data-view="b" hidden><p class="qf-set">AniBench from the video alone: the first-frame mesh is generated by TRELLIS.2 and its rig by SkinTokens.</p><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
 <div class="qc-h qc-lab"></div>
 <div class="qc-h"><span>CD-3D</span><span class="dir" title="lower is better">&darr;</span></div>
 <div class="qc-h"><span>CD-4D</span><span class="dir" title="lower is better">&darr;</span></div>
@@ -761,27 +750,27 @@ details.qnums .qtabs { margin: 0; }
 <div class="qc-h"><span>FVD</span><span class="dir" title="lower is better">&darr;</span></div>
 <div class="qc-name qr" style="--i:0">ActionMesh</div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="PSNR" data-v="15.28" data-d="1"><div class="qc-track" style="--w:76.40%"><i class="qc-bar"></i><span class="qv">15.28</span></div></div>
-<div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="SSIM" data-v="0.8640" data-d="1"><div class="qc-track" style="--w:86.40%"><i class="qc-bar"></i><span class="qv">0.8640</span></div></div>
+<div class="qc-cell dot qr t-base" style="--i:0" data-n="ActionMesh" data-k="SSIM" data-v="0.8640" data-d="1"><div class="qc-track" style="--w:66.67%"><i class="qc-dot"></i><span class="qv">0.8640</span></div></div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="LPIPS" data-v="0.1501" data-d="-1"><div class="qc-track" style="--w:75.05%"><i class="qc-bar"></i><span class="qv">0.1501</span></div></div>
-<div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="CLIP" data-v="0.9395" data-d="1"><div class="qc-track" style="--w:93.95%"><i class="qc-bar"></i><span class="qv">0.9395</span></div></div>
+<div class="qc-cell dot qr t-base" style="--i:0" data-n="ActionMesh" data-k="CLIP" data-v="0.9395" data-d="1"><div class="qc-track" style="--w:93.75%"><i class="qc-dot"></i><span class="qv">0.9395</span></div></div>
 <div class="qc-cell qr t-base" style="--i:0" data-n="ActionMesh" data-k="FVD" data-v="768.0" data-d="-1"><div class="qc-track" style="--w:76.80%"><i class="qc-bar"></i><span class="qv">768.0</span></div></div>
 <div class="qc-name qr" style="--i:1">Motion 3-to-4</div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="PSNR" data-v="15.22" data-d="1"><div class="qc-track" style="--w:76.10%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="SSIM" data-v="0.8626" data-d="1"><div class="qc-track" style="--w:86.26%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="SSIM" data-v="0.8626" data-d="1"><div class="qc-track" style="--w:55.00%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="LPIPS" data-v="0.1530" data-d="-1"><div class="qc-track" style="--w:76.50%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="CLIP" data-v="0.9324" data-d="1"><div class="qc-track" style="--w:93.24%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="CLIP" data-v="0.9324" data-d="1"><div class="qc-track" style="--w:5.00%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:1" data-n="Motion 3-to-4" data-k="FVD" data-v="859.2" data-d="-1"><div class="qc-track" style="--w:85.92%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr" style="--i:2">Mesh4D</div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="PSNR" data-v="15.15" data-d="1"><div class="qc-track" style="--w:75.75%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="SSIM" data-v="0.8595" data-d="1"><div class="qc-track" style="--w:85.95%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:2" data-n="Mesh4D" data-k="SSIM" data-v="0.8595" data-d="1"><div class="qc-track" style="--w:29.17%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="LPIPS" data-v="0.1545" data-d="-1"><div class="qc-track" style="--w:77.25%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="CLIP" data-v="0.9341" data-d="1"><div class="qc-track" style="--w:93.41%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:2" data-n="Mesh4D" data-k="CLIP" data-v="0.9341" data-d="1"><div class="qc-track" style="--w:26.25%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:2" data-n="Mesh4D" data-k="FVD" data-v="916.9" data-d="-1"><div class="qc-track" style="--w:91.69%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr" style="--i:3">SkelMo</div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="PSNR" data-v="14.91" data-d="1"><div class="qc-track" style="--w:74.55%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="SSIM" data-v="0.8575" data-d="1"><div class="qc-track" style="--w:85.75%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:3" data-n="SkelMo" data-k="SSIM" data-v="0.8575" data-d="1"><div class="qc-track" style="--w:12.50%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="LPIPS" data-v="0.1596" data-d="-1"><div class="qc-track" style="--w:79.80%"><i class="qc-bar"></i></div></div>
-<div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="CLIP" data-v="0.9340" data-d="1"><div class="qc-track" style="--w:93.40%"><i class="qc-bar"></i></div></div>
+<div class="qc-cell dot qr t-base" style="--i:3" data-n="SkelMo" data-k="CLIP" data-v="0.9340" data-d="1"><div class="qc-track" style="--w:25.00%"><i class="qc-dot"></i></div></div>
 <div class="qc-cell qr t-base" style="--i:3" data-n="SkelMo" data-k="FVD" data-v="901.8" data-d="-1"><div class="qc-track" style="--w:90.18%"><i class="qc-bar"></i></div></div>
 <div class="qc-name qr" style="--i:4">Sculpt4D*</div>
 <div class="qc-cell qr t-base" style="--i:4" data-n="Sculpt4D*" data-k="PSNR" data-v="—" data-d="1"><div class="qc-track"><span class="qv na">—</span></div></div>
@@ -791,24 +780,23 @@ details.qnums .qtabs { margin: 0; }
 <div class="qc-cell qr t-base" style="--i:4" data-n="Sculpt4D*" data-k="FVD" data-v="—" data-d="-1"><div class="qc-track"><span class="qv na">—</span></div></div>
 <div class="qc-name qr ours first-ours" style="--i:5"><i class="sw t-ff" aria-hidden="true"></i><span class="full">Ani4D (feed-forward)</span><span class="short">Ani4D</span></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="PSNR" data-v="15.55" data-d="1"><div class="qc-track" style="--w:77.75%"><i class="qc-bar"></i><span class="qv">15.55</span></div></div>
-<div class="qc-cell qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="SSIM" data-v="0.8653" data-d="1"><div class="qc-track" style="--w:86.53%"><i class="qc-bar"></i><span class="qv">0.8653</span></div></div>
+<div class="qc-cell dot qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="SSIM" data-v="0.8653" data-d="1"><div class="qc-track" style="--w:77.50%"><i class="qc-dot"></i><span class="qv">0.8653</span></div></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="LPIPS" data-v="0.1469" data-d="-1"><div class="qc-track" style="--w:73.45%"><i class="qc-bar"></i><span class="qv">0.1469</span></div></div>
-<div class="qc-cell qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="CLIP" data-v="0.9381" data-d="1"><div class="qc-track" style="--w:93.81%"><i class="qc-bar"></i><span class="qv">0.9381</span></div></div>
+<div class="qc-cell dot qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="CLIP" data-v="0.9381" data-d="1"><div class="qc-track" style="--w:76.25%"><i class="qc-dot"></i><span class="qv">0.9381</span></div></div>
 <div class="qc-cell qr ours first-ours t-ff" style="--i:5" data-n="Ani4D (feed-forward)" data-k="FVD" data-v="819.9" data-d="-1"><div class="qc-track" style="--w:81.99%"><i class="qc-bar"></i><span class="qv">819.9</span></div></div>
 <div class="qc-name qr ours" style="--i:6"><i class="sw t-opt" aria-hidden="true"></i><span class="full">Ani4D + shape optimisation</span><span class="short">+ shape opt.</span></div>
 <div class="qc-cell qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="PSNR" data-v="15.67" data-d="1"><div class="qc-track" style="--w:78.35%"><i class="qc-bar"></i><span class="qv">15.67</span></div></div>
-<div class="qc-cell qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="SSIM" data-v="0.8666" data-d="1"><div class="qc-track" style="--w:86.66%"><i class="qc-bar"></i><span class="qv">0.8666</span></div></div>
+<div class="qc-cell dot qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="SSIM" data-v="0.8666" data-d="1"><div class="qc-track" style="--w:88.33%"><i class="qc-dot"></i><span class="qv">0.8666</span></div></div>
 <div class="qc-cell qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="LPIPS" data-v="0.1451" data-d="-1"><div class="qc-track" style="--w:72.55%"><i class="qc-bar"></i><span class="qv">0.1451</span></div></div>
-<div class="qc-cell qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="CLIP" data-v="0.9394" data-d="1"><div class="qc-track" style="--w:93.94%"><i class="qc-bar"></i><span class="qv">0.9394</span></div></div>
+<div class="qc-cell dot qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="CLIP" data-v="0.9394" data-d="1"><div class="qc-track" style="--w:92.50%"><i class="qc-dot"></i><span class="qv">0.9394</span></div></div>
 <div class="qc-cell qr ours t-opt" style="--i:6" data-n="Ani4D + shape optimisation" data-k="FVD" data-v="810.4" data-d="-1"><div class="qc-track" style="--w:81.04%"><i class="qc-bar"></i><span class="qv">810.4</span></div></div>
 <div class="qc-axis qc-lab"></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">10</span><span style="--f:1">20</span></div></div>
-<div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.5</span><span style="--f:1">1</span></div></div>
+<div class="qc-axis"><div class="qa-track"><span style="--f:0">0.856</span><span style="--f:0.5">0.862</span><span style="--f:1">0.868</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.1</span><span style="--f:1">0.2</span></div></div>
-<div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.5</span><span style="--f:1">1</span></div></div>
+<div class="qc-axis"><div class="qa-track"><span style="--f:0">0.932</span><span style="--f:0.5">0.936</span><span style="--f:1">0.94</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">500</span><span style="--f:1">1000</span></div></div>
-</div></div></div></div><figcaption class="cap"><b>Comparison on AniBench.</b> Results are averaged over clips and viewpoints, with (a) ground-truth first-frame assets and (b) video-only input using assets from TRELLIS.2 and SkinTokens. Skeletal methods additionally receive the rig. *Sculpt4D generates a new mesh per frame, so CD-M, MPJPE and appearance are undefined.</figcaption></figure>
-<figure class="qfig2" id="q-meshbench"><div class="qf-head"><h3 class="qf-title">MeshBench</h3><span class="qf-sub">video only</span></div><p class="vis-hidden">Bar charts of the paper's results; every number is in the tables at the end of this section.</p><div class="qview" data-view="m"><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
+</div></div></div><p class="cap qf-cap">Averaged over AniBench&#x27;s 50 clips and their four viewpoints. Skeletal methods additionally receive the rig. *Sculpt4D generates a new mesh per frame, so CD-M, MPJPE and appearance are undefined.</p><table class="vis-hidden"><caption>AniBench · video only</caption><thead><tr><th>Method</th><th>CD-3D (lower is better)</th><th>CD-4D (lower is better)</th><th>CD-M (lower is better)</th><th>MPJPE (lower is better)</th><th>PSNR (higher is better)</th><th>SSIM (higher is better)</th><th>LPIPS (lower is better)</th><th>CLIP (higher is better)</th><th>FVD (lower is better)</th></tr></thead><tbody><tr><th>ActionMesh</th><td>0.0552</td><td>0.0886</td><td>0.1592</td><td>0.0613</td><td>15.28</td><td>0.8640</td><td>0.1501</td><td>0.9395</td><td>768.0</td></tr><tr><th>Motion 3-to-4</th><td>0.0588</td><td>0.0926</td><td>0.1653</td><td>0.0638</td><td>15.22</td><td>0.8626</td><td>0.1530</td><td>0.9324</td><td>859.2</td></tr><tr><th>Mesh4D</th><td>0.0587</td><td>0.0858</td><td>0.1684</td><td>0.0594</td><td>15.15</td><td>0.8595</td><td>0.1545</td><td>0.9341</td><td>916.9</td></tr><tr><th>SkelMo</th><td>0.0621</td><td>0.1056</td><td>0.2026</td><td>0.0794</td><td>14.91</td><td>0.8575</td><td>0.1596</td><td>0.9340</td><td>901.8</td></tr><tr><th>Sculpt4D*</th><td>0.0634</td><td>0.1228</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><th>Ani4D (feed-forward)</th><td>0.0532</td><td>0.0764</td><td>0.1422</td><td>0.0513</td><td>15.55</td><td>0.8653</td><td>0.1469</td><td>0.9381</td><td>819.9</td></tr><tr><th>Ani4D + shape optimisation</th><td>0.0517</td><td>0.0736</td><td>0.1354</td><td>0.0502</td><td>15.67</td><td>0.8666</td><td>0.1451</td><td>0.9394</td><td>810.4</td></tr></tbody></table></div><div class="qview" id="qpanel-m" role="tabpanel" aria-labelledby="qtab-m" data-view="m" hidden><p class="qf-set">MeshBench from the video alone, with the same first-frame setup: mesh from TRELLIS.2, rig from SkinTokens.</p><div class="qblock"><div class="qb-title">Geometry, motion and joints</div><div class="qc-scroll" aria-hidden="true"><div class="qc" style="--nm:4">
 <div class="qc-h qc-lab"></div>
 <div class="qc-h"><span>CD-3D</span><span class="dir" title="lower is better">&darr;</span></div>
 <div class="qc-h"><span>CD-4D</span><span class="dir" title="lower is better">&darr;</span></div>
@@ -854,40 +842,7 @@ details.qnums .qtabs { margin: 0; }
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.075</span><span style="--f:1">0.15</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.125</span><span style="--f:1">0.25</span></div></div>
 <div class="qc-axis"><div class="qa-track"><span style="--f:0">0</span><span style="--f:0.5">0.04</span><span style="--f:1">0.08</span></div></div>
-</div></div></div></div><figcaption class="cap"><b>Video-only comparison on MeshBench</b> over 6 frames, using the same first-frame setup as (b) above. Results are averaged over 50 clips (MPJPE over 37 with skeletons).</figcaption></figure>
-<details class="more qnums"><summary>Every number: the paper's Tables 1 and 2</summary><div class="inner"><div class="qtabs" id="tables"><figure class="qfig"><figcaption class="cap"><b>Comparison on AniBench.</b> Results are averaged over clips and viewpoints, with (a) ground-truth first-frame assets and (b) video-only input using assets from TRELLIS.2 and SkinTokens. Skeletal methods additionally receive the rig. Bold and underline mark the best and second-best per group. *Sculpt4D generates a new mesh per frame, so CD-M, MPJPE and appearance are undefined.</figcaption>
-<div class="qtab-scroll"><table class="qtab">
-<thead><tr><th></th><th colspan="4">geometry, motion and joints</th><th colspan="5">appearance from four views</th></tr><tr><th></th><th>CD-3D&thinsp;&darr;</th><th>CD-4D&thinsp;&darr;</th><th>CD-M&thinsp;&darr;</th><th>MPJPE&thinsp;&darr;</th><th>PSNR&thinsp;&uarr;</th><th>SSIM&thinsp;&uarr;</th><th>LPIPS&thinsp;&darr;</th><th>CLIP&thinsp;&uarr;</th><th>FVD&thinsp;&darr;</th></tr></thead>
-<tbody>
-<tr class="grp"><th colspan="10">(a) ground-truth first-frame mesh and rig</th></tr>
-<tr><th scope="row">ActionMesh</th><td>0.0271</td><td>0.0620</td><td>0.1304</td><td>0.0516</td><td>18.83</td><td>0.9038</td><td>0.0836</td><td>0.9775</td><td>381.9</td></tr>
-<tr><th scope="row">Motion 3-to-4</th><td>0.0307</td><td>0.0666</td><td>0.1363</td><td>0.0569</td><td>18.74</td><td>0.9031</td><td>0.0869</td><td>0.9732</td><td>439.8</td></tr>
-<tr><th scope="row">Mesh4D</th><td>0.0337</td><td>0.0594</td><td>0.1377</td><td>0.0527</td><td>17.34</td><td>0.8853</td><td>0.1029</td><td>0.9691</td><td>592.2</td></tr>
-<tr><th scope="row">SkelMo</th><td>0.0324</td><td>0.0616</td><td>0.1380</td><td>0.0565</td><td>18.34</td><td>0.8958</td><td>0.0900</td><td>0.9747</td><td>491.4</td></tr>
-<tr class="sep" aria-hidden="true"><td colspan="10"></td></tr>
-<tr class="ours"><th scope="row">Ani4D (feed-forward)</th><td><u>0.0226</u></td><td><u>0.0408</u></td><td><u>0.0928</u></td><td><u>0.0364</u></td><td><u>19.48</u></td><td><u>0.9060</u></td><td><u>0.0758</u></td><td><u>0.9801</u></td><td><u>365.1</u></td></tr>
-<tr class="ours"><th scope="row">Ani4D + shape optimisation</th><td><b>0.0198</b></td><td><b>0.0378</b></td><td><b>0.0864</b></td><td><b>0.0355</b></td><td><b>19.75</b></td><td><b>0.9088</b></td><td><b>0.0711</b></td><td><b>0.9823</b></td><td><b>333.6</b></td></tr>
-<tr class="grp"><th colspan="10">(b) first-frame mesh from TRELLIS.2 and rig from SkinTokens</th></tr>
-<tr><th scope="row">ActionMesh</th><td>0.0552</td><td>0.0886</td><td>0.1592</td><td>0.0613</td><td>15.28</td><td>0.8640</td><td>0.1501</td><td><b>0.9395</b></td><td><b>768.0</b></td></tr>
-<tr><th scope="row">Motion 3-to-4</th><td>0.0588</td><td>0.0926</td><td>0.1653</td><td>0.0638</td><td>15.22</td><td>0.8626</td><td>0.1530</td><td>0.9324</td><td>859.2</td></tr>
-<tr><th scope="row">Mesh4D</th><td>0.0587</td><td>0.0858</td><td>0.1684</td><td>0.0594</td><td>15.15</td><td>0.8595</td><td>0.1545</td><td>0.9341</td><td>916.9</td></tr>
-<tr><th scope="row">SkelMo</th><td>0.0621</td><td>0.1056</td><td>0.2026</td><td>0.0794</td><td>14.91</td><td>0.8575</td><td>0.1596</td><td>0.9340</td><td>901.8</td></tr>
-<tr><th scope="row">Sculpt4D*</th><td>0.0634</td><td>0.1228</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="sep" aria-hidden="true"><td colspan="10"></td></tr>
-<tr class="ours"><th scope="row">Ani4D (feed-forward)</th><td><u>0.0532</u></td><td><u>0.0764</u></td><td><u>0.1422</u></td><td><u>0.0513</u></td><td><u>15.55</u></td><td><u>0.8653</u></td><td><u>0.1469</u></td><td>0.9381</td><td>819.9</td></tr>
-<tr class="ours"><th scope="row">Ani4D + shape optimisation</th><td><b>0.0517</b></td><td><b>0.0736</b></td><td><b>0.1354</b></td><td><b>0.0502</b></td><td><b>15.67</b></td><td><b>0.8666</b></td><td><b>0.1451</b></td><td><u>0.9394</u></td><td><u>810.4</u></td></tr>
-</tbody></table></div></figure><figure class="qfig"><figcaption class="cap"><b>Video-only comparison on MeshBench</b> over 6 frames, using the same first-frame setup as (b) above. Results are averaged over 50 clips (MPJPE over 37 with skeletons). Bold and underline mark the best and second-best.</figcaption>
-<div class="qtab-scroll"><table class="qtab">
-<thead><tr><th></th><th>CD-3D&thinsp;&darr;</th><th>CD-4D&thinsp;&darr;</th><th>CD-M&thinsp;&darr;</th><th>MPJPE&thinsp;&darr;</th></tr></thead>
-<tbody>
-<tr><th scope="row">ActionMesh</th><td><u>0.0597</u></td><td>0.1149</td><td>0.2000</td><td>0.0564</td></tr>
-<tr><th scope="row">Motion 3-to-4</th><td>0.0612</td><td>0.1179</td><td>0.1981</td><td>0.0573</td></tr>
-<tr><th scope="row">Mesh4D</th><td>0.0639</td><td>0.1136</td><td>0.2113</td><td>0.0554</td></tr>
-<tr><th scope="row">SkelMo</th><td>0.0659</td><td>0.1216</td><td>0.2188</td><td>0.0631</td></tr>
-<tr><th scope="row">Sculpt4D</th><td>0.0666</td><td>0.1427</td><td>—</td><td>—</td></tr>
-<tr class="ours"><th scope="row">Ani4D (feed-forward)</th><td>0.0603</td><td><u>0.1122</u></td><td><u>0.1963</u></td><td><u>0.0528</u></td></tr>
-<tr class="ours"><th scope="row">Ani4D + shape optimisation</th><td><b>0.0592</b></td><td><b>0.1105</b></td><td><b>0.1916</b></td><td><b>0.0510</b></td></tr>
-</tbody></table></div></figure></div></div></details>
+</div></div></div><p class="cap qf-cap">Over 6 frames, averaged over 50 clips (MPJPE over the 37 with skeletons). Sculpt4D generates a new mesh per frame, so its CD-M and MPJPE are undefined.</p><table class="vis-hidden"><caption>MeshBench · video only</caption><thead><tr><th>Method</th><th>CD-3D (lower is better)</th><th>CD-4D (lower is better)</th><th>CD-M (lower is better)</th><th>MPJPE (lower is better)</th></tr></thead><tbody><tr><th>ActionMesh</th><td>0.0597</td><td>0.1149</td><td>0.2000</td><td>0.0564</td></tr><tr><th>Motion 3-to-4</th><td>0.0612</td><td>0.1179</td><td>0.1981</td><td>0.0573</td></tr><tr><th>Mesh4D</th><td>0.0639</td><td>0.1136</td><td>0.2113</td><td>0.0554</td></tr><tr><th>SkelMo</th><td>0.0659</td><td>0.1216</td><td>0.2188</td><td>0.0631</td></tr><tr><th>Sculpt4D</th><td>0.0666</td><td>0.1427</td><td>—</td><td>—</td></tr><tr><th>Ani4D (feed-forward)</th><td>0.0603</td><td>0.1122</td><td>0.1963</td><td>0.0528</td></tr><tr><th>Ani4D + shape optimisation</th><td>0.0592</td><td>0.1105</td><td>0.1916</td><td>0.0510</td></tr></tbody></table></div></figure>
   </div>
 </section>
 
@@ -1395,16 +1350,27 @@ details.qnums .qtabs { margin: 0; }
       for (const e of es) if (e.isIntersecting) { e.target.classList.add("on"); seen.unobserve(e.target); }
     }, { threshold: 0.2 });
     numbers.querySelectorAll(".qview:not([hidden])").forEach(v => seen.observe(v));
-    numbers.querySelectorAll(".qfig2 .seg").forEach(seg => seg.addEventListener("click", e => {
-      const b = e.target.closest("button[data-view]");
-      if (!b || b.getAttribute("aria-pressed") === "true") return;
-      const fig = seg.closest(".qfig2"), k = b.dataset.view;
-      for (const x of seg.querySelectorAll("button")) x.setAttribute("aria-pressed", String(x === b));
-      for (const el of fig.querySelectorAll(".qview, .qf-set")) {
-        el.hidden = el.dataset.view !== k;
-        if (!el.hidden && el.classList.contains("qview")) { seen.unobserve(el); grow(el); }
-      }
-    }));
+    // one tab per setting (AniBench given asset / video only, MeshBench video only); arrow keys move between tabs
+    numbers.querySelectorAll('[role="tablist"]').forEach(list => {
+      const tabs = [...list.querySelectorAll('[role="tab"]')];
+      const pick = (b, focus) => {
+        if (b.getAttribute("aria-selected") === "true") return;
+        for (const x of tabs) {
+          const on = x === b, panel = document.getElementById(x.getAttribute("aria-controls"));
+          x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1;
+          panel.hidden = !on;
+          if (on) { seen.unobserve(panel); grow(panel); }
+        }
+        if (focus) b.focus();
+      };
+      list.addEventListener("click", e => { const b = e.target.closest('[role="tab"]'); if (b) pick(b, false); });
+      list.addEventListener("keydown", e => {
+        const i = tabs.indexOf(document.activeElement);
+        const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (i < 0 || to === undefined) return;
+        e.preventDefault(); pick(tabs[(to + tabs.length) % tabs.length], true);
+      });
+    });
     const tip = h("div", { class: "qtip", role: "tooltip", hidden: true });
     document.body.append(tip);
     const tipAt = (c, x, y) => {
