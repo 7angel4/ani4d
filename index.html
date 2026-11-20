@@ -313,8 +313,6 @@ details.more .inner { padding: 0 1.1rem 1.2rem; display: grid; gap: 1.2rem; }
 .pk[aria-pressed="true"] { outline: 2px solid var(--bone); outline-offset: 1px; }
 .pk .s { position: absolute; left: 4px; bottom: 3px; font-family: var(--mono); font-size: .56rem; color: #5a6170;
   background: rgba(255,255,255,.8); border-radius: 3px; padding: 0 3px; }
-.pk .w { position: absolute; right: 4px; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--good);
-  box-shadow: 0 0 0 2px rgba(255,255,255,.8); }
 .cmp-video canvas.cmp-3d { position: absolute; top: 50%; height: 50%; left: 0; width: 100%; display: block; max-width: none;
   touch-action: none; cursor: grab; }
 .cmp-video canvas.cmp-3d:active { cursor: grabbing; }
@@ -525,7 +523,6 @@ footer p + p { margin-top: .4rem; }
       <p class="hint">Scores under each column: CD-4D · CD-M · MPJPE for this clip and camera (lower is better; best in green). Keys: <kbd>space</kbd> play or pause, <kbd>←</kbd> <kbd>→</kbd> step a frame, <kbd>[</kbd> <kbd>]</kbd> previous or next clip. <b>Save frame</b> downloads exactly the grid shown: the columns you picked, in the current colouring.</p>
       <div class="picker-head">
         <div class="chips" id="pk-chips" role="group" aria-label="Filter clips" style="margin:0"></div>
-        <span class="hint"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:.35rem"></span>ours has the lowest CD-4D on this clip and camera</span>
       </div>
       <div class="picker" id="picker"></div>
     </div>
@@ -1175,11 +1172,8 @@ footer p + p { margin-top: .4rem; }
     picker.textContent = "";
     clips.forEach((c, i) => {
       if (pkFilter !== "All" && c.src !== pkFilter) return;
-      const s = (c.scores && c.scores["v" + String(cam).padStart(2, "0")]) || {};
-      let win = !!s.ours;
-      if (win) for (const m of ["actionmesh", "motion324", "mesh4d", "skelmo"]) if (s[m] && s[m].cd_4d < s.ours.cd_4d) win = false;
       picker.append(h("button", { class: "pk", type: "button", "data-id": c.id, "aria-pressed": String(i === cur), title: c.name,
-        onclick: () => load(i, false) }, h("img", { src: c.thumb, alt: c.name, loading: "lazy" }), h("span", { class: "s" }, c.srcShort), win ? h("span", { class: "w" }) : null));
+        onclick: () => load(i, false) }, h("img", { src: c.thumb, alt: c.name, loading: "lazy" }), h("span", { class: "s" }, c.srcShort)));
     });
   }
   ["All", "Truebones Zoo", "Objaverse", "Objaverse-XL"].filter(f => f === "All" || clips.some(c => c.src === f)).forEach(f => pkChips.append(h("button", { class: "chip", type: "button", "aria-pressed": String(f === pkFilter),
