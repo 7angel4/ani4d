@@ -459,7 +459,7 @@ footer p + p { margin-top: .4rem; }
 <section id="abstract">
   <div class="wrap">
     <div class="shead"><h2>Abstract</h2></div>
-    <p class="tldr"><span class="tldr-k">TL;DR</span>Ani4D reconstructs an animatable 4D mesh from a video by posing a rigged asset's own skeleton instead of moving its vertices. A rigged image-to-3D model pretrained on static assets predicts that skeleton in every frame, so even unseen characters, animals and objects move by their bones without stretching; with no asset given, one is generated from the first frame.</p>
+    <p class="tldr"><span class="tldr-k">TL;DR</span>Given a video and an optional 3D asset, Ani4D leverages pretrained image-to-3D priors to reconstruct skeletal motion across diverse, unseen skeletons while preserving part rigidity.</p>
     <div class="prose">
       <p>Reconstructing animatable 3D assets from video is fundamental to 3D content creation. Recent feed-forward video-to-4D methods efficiently reconstruct motion through vertex-based deformation, but often distort rigid parts, stretch geometry, and fuse nearby parts. Skeletal animation offers a structured alternative, yet diverse skeleton topologies and scarce animated 3D data make learning across objects challenging.</p>
       <p>Our key insight is that rigged image-to-3D models pretrained on large-scale static data provide generalisable geometric and articulation priors useful for video-conditioned skeletal animation. Building on these priors, we introduce Ani4D, which predicts posed geometry and skeletons across frames, then recovers joint transformations on the asset's kinematic tree and applies linear blend skinning to produce structurally consistent animations. When no asset is given, an off-the-shelf generator and rigger produce one from the first frame, enabling video-only reconstruction of a rigged asset and its motion.</p>
@@ -480,7 +480,7 @@ footer p + p { margin-top: .4rem; }
         <div class="fail-main" id="fail-main" role="tabpanel"></div>
       </div>
     </div>
-    <div class="shead cmp-head"><span class="eyebrow">Selected AniBench clips · four cameras</span><h3 class="h-sub">Side-by-side comparison with every baseline</h3>
+    <div class="shead cmp-head"><span class="eyebrow">Selected AniBench clips · four cameras</span><h3 class="h-sub">Comparison with prior art</h3>
       <p>A selection of the AniBench clips where Ani4D beats every baseline on CD-4D, CD-M and MPJPE, averaged over the four cameras or from the front camera.</p></div>
     <div class="cmp" id="cmp">
       <div class="cmp-top">
